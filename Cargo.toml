@@ -1,2 +1,2 @@
 [workspace]
-members = [ "leaning-wgpu","learning-wgpu", "wasmsample2"]
+members = ["learning-wgpu", "wasmsample2"]
