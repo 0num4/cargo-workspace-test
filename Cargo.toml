@@ -1,1 +1,2 @@
 [workspace]
+members = ["learning-wgpu", "wasmsample2"]
