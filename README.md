@@ -66,3 +66,15 @@ cargo build -p wasmsample2
 これで、Cargo ワークスペースを使用して **learning-wgpu** と wasmsample2 プロジェクトを作成できました。各プロジェクトの実装を進めることができます。
 
 追加の情報や特定の実装に関する質問がありましたら、お知らせください。
+
+## wgpu の勉強
+
+https://qiita.com/ciscorn/items/c8c18fbcb60475cb4491
+
+https://sotrh.github.io/learn-wgpu/
+の写経
+
+### wgpu について
+
+https://crates.io/crates/wgpu
+v22 系
