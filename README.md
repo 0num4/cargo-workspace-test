@@ -67,6 +67,11 @@ cargo build -p wasmsample2
 
 追加の情報や特定の実装に関する質問がありましたら、お知らせください。
 
+https://doc.rust-jp.rs/book-ja/ch14-03-cargo-workspaces.html
+TRPL が一番わかりやすい
+
+mkdir して手動で Cargo.toml を作ってディレクトリ入ってその下で cargo new add-one --lib して使う側のほうの Cargo.toml を手動で dependencies を書いて import する
+
 ## wgpu の勉強
 
 https://qiita.com/ciscorn/items/c8c18fbcb60475cb4491
