@@ -72,6 +72,8 @@ TRPL が一番わかりやすい
 
 mkdir して手動で Cargo.toml を作ってディレクトリ入ってその下で cargo new add-one --lib して使う側のほうの Cargo.toml を手動で dependencies を書いて import する
 
+その後extern crate で持ってきて呼び出す
+
 ## wgpu の勉強
 
 https://qiita.com/ciscorn/items/c8c18fbcb60475cb4491

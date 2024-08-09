@@ -47,3 +47,25 @@ note: for more details see https://doc.rust-lang.org/cargo/reference/resolver.ht
       Adding windows-core v0.52.0 (latest: v0.58.0)
 
 ```
+
+cargo run -p xxx について
+
+```
+user: root …/Owner/work/private/test/cargo-workspace-test on  main [!] via 🦀 v1.80.0
+❯ cargo run -p learning-wgpu/
+warning: virtual workspace defaulting to `resolver = "1"` despite one or more workspace members being on edition 2021 which implies `resolver = "2"`
+note: to keep the current resolver, specify `workspace.resolver = "1"` in the workspace root's manifest
+note: to use the edition 2021 resolver, specify `workspace.resolver = "2"` in the workspace root's manifest
+note: for more details see https://doc.rust-lang.org/cargo/reference/resolver.html#resolver-versions
+error: package ID specification `learning-wgpu/` looks like a file path, maybe try file:///mnt/c/Users/Owner/work/private/test/cargo-workspace-test/learning-wgpu
+
+user: root …/Owner/work/private/test/cargo-workspace-test on  main [!] via 🦀 v1.80.0
+❯ cargo run -p learning-wgpu
+warning: virtual workspace defaulting to `resolver = "1"` despite one or more workspace members being on edition 2021 which implies `resolver = "2"`
+note: to keep the current resolver, specify `workspace.resolver = "1"` in the workspace root's manifest
+note: to use the edition 2021 resolver, specify `workspace.resolver = "2"` in the workspace root's manifest
+note: for more details see https://doc.rust-lang.org/cargo/reference/resolver.html#resolver-versions
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.03s
+     Running `target/debug/learning-wgpu`
+Hello, world!
+```
