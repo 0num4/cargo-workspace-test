@@ -72,7 +72,7 @@ TRPL が一番わかりやすい
 
 mkdir して手動で Cargo.toml を作ってディレクトリ入ってその下で cargo new add-one --lib して使う側のほうの Cargo.toml を手動で dependencies を書いて import する
 
-その後extern crate で持ってきて呼び出す
+その後 extern crate で持ってきて呼び出す
 
 ## wgpu の勉強
 
@@ -262,10 +262,20 @@ note: for more details see https://doc.rust-lang.org/cargo/reference/resolver.ht
 
 ```
 
-## 0.29に固定する
+## 0.29 に固定する
+
 ![alt text](image.png)
+
+```
+1. cargo.tomlを直接いじる
+2. cargo build
+3. cargo update
 ```
 
+winit 0.29 が入ったかどうかを見るには
+
+```
+cargo tree
 ```
 
 ## その他のライブラリ、env_logger や log について追加
