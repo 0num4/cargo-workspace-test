@@ -1,4 +1,8 @@
 
+use std::panic;
+
+use cfg_if::cfg_if;
+use wasm_bindgen::prelude;
 use winit::{
     event::*,
     event_loop::EventLoop,
@@ -6,7 +10,13 @@ use winit::{
     window::WindowBuilder,
 };
 
+
 pub fn run() {
+    cfg_if! {
+        if #[cfg(target_arch = "wasm32")] {
+            panic::set_hook(Box::new())
+        }
+    }
     let event_loop = EventLoop::new().unwrap(); // event_loopはEventLoop型
     let window = WindowBuilder::new().build(&event_loop).unwrap();
 

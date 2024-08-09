@@ -317,3 +317,5 @@ wasm-bindgen-futuresはwasm-bindgenのpromiseとjsのpromiseをつなぐ
 https://crates.io/crates/wasm-bindgen-futures
 
 console_log・・・jsのconsole.log apiに送る
+
+console_error_panic_hook・・・rustのpanicにhookしてpanicの内容をjsのconsole.logに送る
