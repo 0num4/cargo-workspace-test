@@ -309,3 +309,9 @@ rlibはrust static library
 libを作るときにはlib.rsという名前にする必要がある、もしくはlibセクションの中でpathを指定してあげる必要がある
 
 別ファイルから呼び出すときはmodを忘れないように
+
+## それぞれで使われてるcrate
+cfg-if・・・マクロをつき足す
+
+wasm-bindgen-futuresはwasm-bindgenのpromiseとjsのpromiseをつなぐ
+https://crates.io/crates/wasm-bindgen-futures
