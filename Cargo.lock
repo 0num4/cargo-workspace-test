@@ -762,6 +762,8 @@ dependencies = [
  "add-one",
  "env_logger",
  "log",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
  "wgpu",
  "winit",
 ]
