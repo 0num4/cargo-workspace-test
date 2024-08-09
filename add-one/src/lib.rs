@@ -5,9 +5,9 @@ enum VariantSample {
     Color(i32, i32, i32),
 }
 
-pub fn useVariantSample() {
-    let variantInstance = VariantSample::VecHasXandY { x: 1, y: 2 };
-    match variantInstance {
+pub fn use_variant_sample() {
+    let variant_instance: VariantSample = VariantSample::VecHasXandY { x: 1, y: 2 };
+    match variant_instance {
         // matchの後は変数(instance)を入れる。matchのifはinstanceの元のフィールドを使う。
         VariantSample::NoDataVariant => println!("NoDataVariant"),
         VariantSample::VecHasXandY { x, y } => println!("VecHasXandY x: {}, y: {}", x, y),
