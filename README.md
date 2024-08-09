@@ -296,3 +296,12 @@ cargo add env-logger log
 
 ## macなら動いた
 ![alt text](image-3.png)
+
+## rlibとcdylibについて
+https://qiita.com/etoilevi/items/4bd4c5b726e41f5a6689
+
+rlibがrustから利用されるlib
+cdylibがffiされるlib
+dylibとcdylibがある。dylibはもちろん動的ライブラリ。で静的ライブラリもある。
+
+rlibはrust static library
