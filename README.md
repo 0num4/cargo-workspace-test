@@ -293,3 +293,6 @@ cargo add env-logger log
 ```
 
 ```
+
+## macなら動いた
+![alt text](image-3.png)
