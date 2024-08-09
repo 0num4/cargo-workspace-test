@@ -283,3 +283,13 @@ cargo tree
 ```
 cargo add env-logger log
 ```
+
+## rust の勉強
+
+バリアントとフィールドの違い
+![alt text](image-1.png)
+![alt text](image-2.png)
+理解。バリアントはenumのフィールドだがその実態は埋め込み構造体のようなもの。enumで埋め込み構造体を表現する
+```
+
+```
