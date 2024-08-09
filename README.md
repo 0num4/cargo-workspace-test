@@ -315,3 +315,5 @@ cfg-if・・・マクロをつき足す
 
 wasm-bindgen-futuresはwasm-bindgenのpromiseとjsのpromiseをつなぐ
 https://crates.io/crates/wasm-bindgen-futures
+
+console_log・・・jsのconsole.log apiに送る
