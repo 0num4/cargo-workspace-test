@@ -262,6 +262,12 @@ note: for more details see https://doc.rust-lang.org/cargo/reference/resolver.ht
 
 ```
 
+## 0.29に固定する
+![alt text](image.png)
+```
+
+```
+
 ## その他のライブラリ、env_logger や log について追加
 
 ```
