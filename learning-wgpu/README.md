@@ -180,3 +180,7 @@ Understand this warning
 test.html:1 Texture size ([Extent3D width:19200, height:9600, depthOrArrayLayers:1]) exceeded maximum texture size ([Extent3D width:8192, height:8192, depthOrArrayLayers:256]).
     at ValidateTextureSize (../../third_party/dawn/src/dawn/native/Texture.cpp:305)
 ```
+
+# capter3
+## WGSLについて
+wgpuではWGSLから内部のレンダラー(valkanのspir-vやmetalのHSL、dx12のhlslやopenglのglslなど)への変換はnagaで行われる
