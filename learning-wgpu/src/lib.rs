@@ -140,9 +140,11 @@ impl <'a> State<'a> {
 pub async fn run() {
     cfg_if! {
         if #[cfg(target_arch = "wasm32")] {
-            panic::set_hook(Box::new(console_error_panic_hook::hook));
-            console_log::init_with_level(log::Level::Warn).expect("Couldn't initialize logger");
+            // panic::set_hook(Box::new(console_error_panic_hook::hook));
+            console_error_panic_hook::set_once();
+            console_log::init_with_level(log::Level::Info).expect("Couldn't initialize logger");
         } else{
+            println!("not assumed");
             env_logger::init(); // env_logger, useしなくても使えてる:thinking_face:
         }
     }
@@ -212,6 +214,11 @@ pub async fn run() {
                             Err(e) => println!("{:?}", e)
                         }
                     }
+                    WindowEvent::CursorMoved { device_id, position } => {
+                        log::info!("cursor moved{:?}, {:?}", device_id, position);
+                        println!("cursor moved{:?}, {:?}", device_id, position);
+                        // panic!("cursor moved{:?}, {:?}", device_id, position);
+                    },
                     // Event::AboutToWait => {
                     //     state.window().request_redraw();
                     // }
