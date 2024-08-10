@@ -69,3 +69,22 @@ note: for more details see https://doc.rust-lang.org/cargo/reference/resolver.ht
      Running `target/debug/learning-wgpu`
 Hello, world!
 ```
+
+#　作ったwasmを開く
+test.htmlを用意してwasm-packでビルドしたwasmを開く。
+```
+cargo-workspace-test on  main [?] via 🦀 v1.80.1 on ☁️   
+❯ python -m http.server
+Serving HTTP on :: port 8000 (http://[::]:8000/) ...
+::1 - - [10/Aug/2024 09:51:29] "GET / HTTP/1.1" 200 -
+::1 - - [10/Aug/2024 09:51:29] code 404, message File not found
+::1 - - [10/Aug/2024 09:51:29] "GET /favicon.ico HTTP/1.1" 404 -
+::1 - - [10/Aug/2024 09:51:36] "GET /learning-wgpu/ HTTP/1.1" 200 -
+::1 - - [10/Aug/2024 09:51:37] "GET /learning-wgpu/test.html HTTP/1.1" 200 -
+::1 - - [10/Aug/2024 09:51:37] "GET /learning-wgpu/pkg/learning_wgpu.js HTTP/1.1" 200 -
+::1 - - [10/Aug/2024 09:51:37] "GET /learning-wgpu/pkg/learning_wgpu_bg.wasm HTTP/1.1" 200 -
+::1 - - [10/Aug/2024 09:51:37] "GET /learning-wgpu/pkg/learning_wgpu.js HTTP/1.1" 200 -
+
+```
+こうなった
+![alt text](image.png)
