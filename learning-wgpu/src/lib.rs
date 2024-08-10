@@ -23,9 +23,61 @@ struct State<'a> {
 }
 
 impl <'a> State<'a> {
-    async fn new() -> State<'a>{
-        todo!()
+    async fn new(window: &'a Window) -> State<'a> {
+        
+        let size = window.inner_size();
+        // wgpu::Instance::newが一番重要。
+        let instance = wgpu::Instance::new(wgpu::InstanceDescriptor { 
+            #[cfg(not(target_arch="wasm32"))]
+            backends: wgpu::Backends::PRIMARY, 
+            // flags: (), 
+            #[cfg(not(target_arch="wasm32"))]
+            backends: wgpu::Backends::GL,
+            // dx12_shader_compiler: (), 
+            // gles_minor_version: () 
+            ..Default::default()
+        });
+        let surface = instance.create_surface(window).unwrap();
+        let adapter = instance.request_adapter(&wgpu::RequestAdapterOptionsBase { 
+            power_preference: (),
+            force_fallback_adapter: (),
+            compatible_surface: () 
+        }).await.unwrap();
+
+        let (device, queue) = adapter.request_device(
+            // &wgpu::Features::empty(),
+            &wgpu::DeviceDescriptor {
+                required_features: wgpu::Features::empty(),
+                required_limits: if cfg!(target_arch = "wasm32"){
+                    wgpu::Limits::downlevel_webgl2_defaults()
+                } else {
+                    wgpu::Limits::default()
+                },
+                label: None,
+                memory_hints: Default::default()
+            },
+            None  
+        ).await.unwrap();
+        let config = wgpu::SurfaceConfiguration {
+            usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
+            format: todo!(),
+            width: size.width,
+            height: size.height,
+            present_mode: todo!(),
+            desired_maximum_frame_latency: todo!(),
+            alpha_mode: todo!(),
+            view_formats: todo!(),
+        };
+        return Self {
+            surface,
+            device,
+            queue,
+            config,
+            size,
+            window,
+        };
     }
+    
     pub fn window(&self) -> &Window {
         &self.window
     }
