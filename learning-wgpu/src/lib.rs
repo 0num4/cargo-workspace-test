@@ -101,7 +101,7 @@ impl <'a> State<'a> {
                     resolve_target: None,
                     ops: wgpu::Operations { 
                         load: wgpu::LoadOp::Clear(wgpu::Color { 
-                            r: 0.1,
+                            r: 0.6,
                                 g: 0.2,
                                 b: 0.3,
                                 a: 1.0, 
@@ -158,7 +158,6 @@ pub async fn run() {
     #[cfg(target_arch = "wasm32")]
     {
         use winit::dpi::PhysicalSize;
-        let _ = window.request_inner_size(PhysicalSize::new(450, 400));
         // winitではcssのサイズ変更ができないのでweb上でやる必要がある
         use winit::platform::web::WindowExtWebSys; //webの補完が効かなかった
         web_sys::window()
@@ -170,7 +169,7 @@ pub async fn run() {
                 Some(())
             })
             .expect("Couldn't append canvas to document body.");
-        
+        let _ = window.request_inner_size(PhysicalSize::new(450, 400));
     }
 
     let mut state = State::new(&window).await;
