@@ -21,7 +21,7 @@ struct State<'a> {
     config: wgpu::SurfaceConfiguration,
     size: winit::dpi::PhysicalSize<u32>,
     window: &'a Window,
-    render_pipeline: wgpu::RenderPipeline
+    render_pipeline: wgpu::RenderPipeline,
 }
 
 impl <'a> State<'a> {
@@ -86,9 +86,9 @@ impl <'a> State<'a> {
             push_constant_ranges: &[] 
             });
         let render_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
-             label: Some("Render Pipeline"),
-              layout: Some(&render_pipeline_layout),
-               vertex: VertexState{ 
+            label: Some("Render Pipeline"),
+            layout: Some(&render_pipeline_layout),
+            vertex: wgpu::VertexState { 
                 module: &shader, 
                 entry_point: "vs_main", 
                 compilation_options: wgpu::PipelineCompilationOptions::default(), 
@@ -104,7 +104,7 @@ impl <'a> State<'a> {
                 conservative: false
             },
             depth_stencil: None,
-                multisample: wgpu::MultisampleState {
+            multisample: wgpu::MultisampleState {
                 count: 1, // 2.
                 mask: !0, // 3.
                 alpha_to_coverage_enabled: false, // 4.
@@ -119,9 +119,9 @@ impl <'a> State<'a> {
                     write_mask: wgpu::ColorWrites::ALL
                 })]
             }),
-                multiview: None,
-                cache: None 
-            });
+            multiview: None,
+            cache: None 
+        });
 
         return Self {
             surface,
@@ -153,10 +153,10 @@ impl <'a> State<'a> {
                     ops: wgpu::Operations { 
                         load: wgpu::LoadOp::Clear(wgpu::Color { 
                             r: 0.6,
-                                g: 0.2,
-                                b: 0.3,
-                                a: 1.0, 
-                            }), 
+                            g: 0.2,
+                            b: 0.3,
+                            a: 1.0, 
+                        }),
                         store: wgpu::StoreOp::Store,
                     }
                     })],
