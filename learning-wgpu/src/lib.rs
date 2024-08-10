@@ -31,7 +31,7 @@ impl <'a> State<'a> {
             #[cfg(not(target_arch="wasm32"))]
             backends: wgpu::Backends::PRIMARY, 
             // flags: (), 
-            #[cfg(not(target_arch="wasm32"))]
+            #[cfg(target_arch="wasm32")]
             backends: wgpu::Backends::GL,
             // dx12_shader_compiler: (), 
             // gles_minor_version: () 
@@ -39,9 +39,9 @@ impl <'a> State<'a> {
         });
         let surface = instance.create_surface(window).unwrap();
         let adapter = instance.request_adapter(&wgpu::RequestAdapterOptionsBase { 
-            power_preference: (),
-            force_fallback_adapter: (),
-            compatible_surface: () 
+            power_preference: wgpu::PowerPreference::default(),
+            force_fallback_adapter: false,
+            compatible_surface: Some(&surface)
         }).await.unwrap();
 
         let (device, queue) = adapter.request_device(
