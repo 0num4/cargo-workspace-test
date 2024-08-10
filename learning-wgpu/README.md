@@ -132,3 +132,51 @@ learning_wgpu_bg.wasm:0x34819 Uncaught RuntimeError: unreachable
     at __wbg_adapter_64 (learning_wgpu.js:239:10)
     at real (learning_wgpu.js:200:20)
 ```
+# エラーが変わった
+```
+WASM Loaded
+learning_wgpu.js:1492 Uncaught Error: Using exceptions for control flow, don't mind me. This isn't actually an error!
+    at imports.wbg.__wbindgen_throw (learning_wgpu.js:1492:15)
+    at learning_wgpu_bg.wasm:0x52487
+    at learning_wgpu_bg.wasm:0xfedd
+    at learning_wgpu_bg.wasm:0x2928f
+    at learning_wgpu_bg.wasm:0x506cb
+    at __wbg_adapter_64 (learning_wgpu.js:239:10)
+    at real (learning_wgpu.js:200:20)
+imports.wbg.__wbindgen_throw @ learning_wgpu.js:1492
+$func1079 @ learning_wgpu_bg.wasm:0x52487
+$func317 @ learning_wgpu_bg.wasm:0xfedd
+$func389 @ learning_wgpu_bg.wasm:0x2928f
+$_dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h692562d73c68a61c @ learning_wgpu_bg.wasm:0x506cb
+__wbg_adapter_64 @ learning_wgpu.js:239
+real @ learning_wgpu.js:200Understand this error
+test.html:1 Command buffer recording ended before [RenderPassEncoder "render path"] was ended.
+    at Finish (../../third_party/dawn/src/dawn/native/EncodingContext.cpp:236)
+Understand this warning
+18[Invalid CommandBuffer "render encoder" from CommandEncoder "render encoder"] is invalid.
+ - While calling [Queue].Submit([[Invalid CommandBuffer "render encoder" from CommandEncoder "render encoder"]])
+Understand this warning
+test.html:1 [Invalid CommandBuffer "render encoder" from CommandEncoder "render encoder"] is invalid.
+ - While calling [Queue].Submit([[Invalid CommandBuffer "render encoder" from CommandEncoder "render encoder"]])
+
+ 略
+
+ Texture size ([Extent3D width:9600, height:4800, depthOrArrayLayers:1]) exceeded maximum texture size ([Extent3D width:8192, height:8192, depthOrArrayLayers:256]).
+    at ValidateTextureSize (../../third_party/dawn/src/dawn/native/Texture.cpp:305)
+Understand this warning
+14Could not create the swapchain texture.
+    at APIInjectError (..<URL>)
+Understand this warning
+14[Invalid Texture] is invalid.
+ - While calling [Invalid Texture].CreateView([TextureViewDescriptor]).
+Understand this warning
+14[Invalid TextureView] is invalid.
+ - While validating colorAttachments[0].
+ - While encoding [CommandEncoder "render encoder"].BeginRenderPass([null]).
+Understand this warning
+13Parent encoder of [Invalid RenderPassEncoder "render path"] is already finished.
+ - While encoding [Invalid RenderPassEncoder "render path"].End().
+Understand this warning
+test.html:1 Texture size ([Extent3D width:19200, height:9600, depthOrArrayLayers:1]) exceeded maximum texture size ([Extent3D width:8192, height:8192, depthOrArrayLayers:256]).
+    at ValidateTextureSize (../../third_party/dawn/src/dawn/native/Texture.cpp:305)
+```

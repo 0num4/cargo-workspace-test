@@ -59,10 +59,13 @@ impl <'a> State<'a> {
             None  
         ).await.unwrap();
         let surface_caps =  surface.get_capabilities(&adapter);
-        let surface_format = surface_caps.formats.iter().find(|f| f.is_srgb()).copied().unwrap();
+        let surface_format = surface_caps.
+        formats.iter()
+        .find(|f| f.is_srgb())
+        .unwrap_or(&surface_caps.formats[0]);
         let config = wgpu::SurfaceConfiguration {
             usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
-            format: surface_format,
+            format: *surface_format,
             width: size.width,
             height: size.height,
             present_mode: surface_caps.present_modes[0],
