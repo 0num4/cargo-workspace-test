@@ -22,6 +22,19 @@ struct State<'a> {
     window: &'a Window
 }
 
+impl <'a> State<'a> {
+    async fn new() -> State<'a>{
+        todo!()
+    }
+    pub fn window(&self) -> &Window {
+        &self.window
+    }
+
+    fn render(&mut self) -> Result<(), wgpu::SurfaceError> {
+        todo!()
+    }
+}
+
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen(start))]
 pub fn run() {
     cfg_if! {
