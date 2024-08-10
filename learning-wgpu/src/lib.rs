@@ -5,7 +5,7 @@ use cfg_if::cfg_if;
 
 use web_sys::window;
 use winit::{
-    event::*,
+    event::{self, *},
     event_loop::EventLoop,
     keyboard::{KeyCode, PhysicalKey},
     window::{Window, WindowBuilder},
@@ -87,10 +87,26 @@ impl <'a> State<'a> {
     fn render(&mut self) -> Result<(), wgpu::SurfaceError> {
         todo!()
     }
+
+    #[allow(unused_variables)]
+    fn input(&mut self, event: &WindowEvent) -> bool{
+        return false;
+    }
+
+    fn update(&mut self) {}
+
+    pub fn resize(&mut self, new_size: winit::dpi::PhysicalSize<u32>){
+        if new_size.width > 0 && new_size.height > 0 {
+            self.size = new_size;
+            self.config.width = new_size.width;
+            self.config.height = new_size.height;
+            self.surface.configure(&self.device, &self.config);
+        }
+    }
 }
 
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen(start))]
-pub fn run() {
+pub async fn run() {
     cfg_if! {
         if #[cfg(target_arch = "wasm32")] {
             panic::set_hook(Box::new(console_error_panic_hook::hook));
@@ -126,6 +142,8 @@ pub fn run() {
         
     }
 
+    let mut state = State::new(&window).await;
+    let mut surface_configured = false;
     let _ = event_loop.run(move |event, control_flow| match event {
         // eventはバリアント。
         // バリアントって一般的なプログラミング言語のフィールドという意味ですか？
@@ -133,18 +151,44 @@ pub fn run() {
         Event::WindowEvent {
             ref event, // デフォルトではeventは参照型。
             window_id,
-        } if window_id == window.id() => match event {
-            WindowEvent::CloseRequested
-            | WindowEvent::KeyboardInput {
-                event:
-                    KeyEvent {
-                        state: ElementState::Pressed,
-                        physical_key: PhysicalKey::Code(KeyCode::Escape),
+        } if window_id == state.window.id() => {
+            if !state.input(event){
+                // UPDATED!
+                match event {
+                    WindowEvent::CloseRequested | WindowEvent::KeyboardInput { 
+                        event:
+                            KeyEvent {
+                                state: ElementState::Pressed,
+                                physical_key: PhysicalKey::Code(KeyCode::Escape),
+                                ..
+                            },
                         ..
-                    },
-                .. //パターンマッチの記法で、..は残りのフィールドを無視する。
-            } => control_flow.exit(),
-            _ => {}
+                     } => control_flow.exit(),
+                     WindowEvent::Resized(physical_size) => {
+                        log::info!("physical_size: {physical_size:?}");
+                        surface_configured = true;
+                        state.resize(*physical_size);
+                    }
+                    WindowEvent::RedrawRequested => {
+                        state.window().request_redraw();
+                        if surface_configured == false {
+                            return;
+                        }
+                    }
+                    _ => {}
+                }
+            }
+            // WindowEvent::CloseRequested
+            // | WindowEvent::KeyboardInput {
+            //     event:
+            //         KeyEvent {
+            //             state: ElementState::Pressed,
+            //             physical_key: PhysicalKey::Code(KeyCode::Escape),
+            //             ..
+            //         },
+            //     .. //パターンマッチの記法で、..は残りのフィールドを無視する。
+            // } => control_flow.exit(),
+            // _ => {}
         },
         _ => {}
     });
