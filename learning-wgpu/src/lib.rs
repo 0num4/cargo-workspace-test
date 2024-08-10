@@ -1,11 +1,10 @@
 
-use std::{ops::ControlFlow, panic};
+// use std::{ops::ControlFlow, panic};
 
 use cfg_if::cfg_if;
 
-use web_sys::window;
 use winit::{
-    event::{self, *},
+    event::*,
     event_loop::EventLoop,
     keyboard::{KeyCode, PhysicalKey},
     window::{Window, WindowBuilder},
@@ -66,13 +65,16 @@ impl <'a> State<'a> {
         let config = wgpu::SurfaceConfiguration {
             usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
             format: *surface_format,
-            width: size.width,
-            height: size.height,
+            // width: size.width,
+            // height: size.height,
+            width: size.width.max(1),
+            height: size.height.max(1),
             present_mode: surface_caps.present_modes[0],
             desired_maximum_frame_latency: 2,
             alpha_mode: surface_caps.alpha_modes[0],
             view_formats: vec![],
         };
+        surface.configure(&device, &config);     
         return Self {
             surface,
             device,
@@ -101,9 +103,9 @@ impl <'a> State<'a> {
                     resolve_target: None,
                     ops: wgpu::Operations { 
                         load: wgpu::LoadOp::Clear(wgpu::Color { 
-                            r: 0.1,
+                                r: 0.6,
                                 g: 0.2,
-                                b: 0.3,
+                                b: 0.1,
                                 a: 1.0, 
                             }), 
                         store: wgpu::StoreOp::Store,
@@ -140,7 +142,8 @@ impl <'a> State<'a> {
 pub async fn run() {
     cfg_if! {
         if #[cfg(target_arch = "wasm32")] {
-            panic::set_hook(Box::new(console_error_panic_hook::hook));
+            // panic::set_hook(Box::new(console_error_panic_hook::hook));
+            console_error_panic_hook::set_once();
             console_log::init_with_level(log::Level::Warn).expect("Couldn't initialize logger");
         } else{
             env_logger::init(); // env_logger, useしなくても使えてる:thinking_face:
@@ -158,7 +161,6 @@ pub async fn run() {
     #[cfg(target_arch = "wasm32")]
     {
         use winit::dpi::PhysicalSize;
-        let _ = window.request_inner_size(PhysicalSize::new(450, 400));
         // winitではcssのサイズ変更ができないのでweb上でやる必要がある
         use winit::platform::web::WindowExtWebSys; //webの補完が効かなかった
         web_sys::window()
@@ -170,11 +172,11 @@ pub async fn run() {
                 Some(())
             })
             .expect("Couldn't append canvas to document body.");
-        
+        let _ = window.request_inner_size(PhysicalSize::new(450, 400));
     }
 
     let mut state = State::new(&window).await;
-    let mut surface_configured = false;
+    // let mut surface_configured = false;
     let _ = event_loop.run(move |event, control_flow| match event {
         // eventはバリアント。
         // バリアントって一般的なプログラミング言語のフィールドという意味ですか？
@@ -186,6 +188,10 @@ pub async fn run() {
             if !state.input(event){
                 // UPDATED!
                 match event {
+                    WindowEvent::Resized(physical_size) => {
+                        log::info!("physical_size: {physical_size:?}");
+                        state.resize(*physical_size);
+                    }
                     WindowEvent::CloseRequested | WindowEvent::KeyboardInput { 
                         event:
                             KeyEvent {
@@ -195,11 +201,6 @@ pub async fn run() {
                             },
                         ..
                      } => control_flow.exit(),
-                     WindowEvent::Resized(physical_size) => {
-                        log::info!("physical_size: {physical_size:?}");
-                        surface_configured = true;
-                        state.resize(*physical_size);
-                    }
                     WindowEvent::RedrawRequested if window_id == state.window().id() => {
                         // state.window().request_redraw();
                         // if surface_configured == false {
@@ -209,9 +210,10 @@ pub async fn run() {
                         match state.render() {
                             Ok(_) => {}
                             Err(wgpu::SurfaceError::Lost) => state.resize(state.size),
-                            Err(wgpu::SurfaceError::OutOfMemory) => control_flow.exit(),
+                            Err(wgpu::SurfaceError::OutOfMemory) => panic!("Out of memory"),
                             Err(e) => println!("{:?}", e)
                         }
+                        state.window.request_redraw();
                     }
                     // Event::AboutToWait => {
                     //     state.window().request_redraw();

@@ -180,3 +180,9 @@ Understand this warning
 test.html:1 Texture size ([Extent3D width:19200, height:9600, depthOrArrayLayers:1]) exceeded maximum texture size ([Extent3D width:8192, height:8192, depthOrArrayLayers:256]).
     at ValidateTextureSize (../../third_party/dawn/src/dawn/native/Texture.cpp:305)
 ```
+理解
+
+無限に大きくなる現象はwasm32の
+let _ = window.request_inner_size(PhysicalSize::new(450, 400));
+の順番が逆だった
+#[cfg(target_arch = "wasm32")]でwebsys.window()をしたあとサイズを設定する必要がある
