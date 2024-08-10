@@ -17,10 +17,10 @@ use wasm_bindgen::prelude::*;
 pub fn run() {
     cfg_if! {
         if #[cfg(target_arch = "wasm32")] {
-            panic::set_hook(Box::new(console_error_panic_hook::hook))
-            console_log::init_with_level(log::Level::Warn).expect("Couldn't initialize logger")
+            panic::set_hook(Box::new(console_error_panic_hook::hook));
+            console_log::init_with_level(log::Level::Warn).expect("Couldn't initialize logger");
         } else{
-            env_logger::init() // env_logger, useしなくても使えてる:thinking_face:
+            env_logger::init(); // env_logger, useしなくても使えてる:thinking_face:
         }
     }
     let event_loop = EventLoop::new().unwrap(); // event_loopはEventLoop型
