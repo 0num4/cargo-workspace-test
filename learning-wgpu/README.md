@@ -192,3 +192,16 @@ wgpuではWGSLから内部のレンダラー(valkanのspir-vやmetalのHSL、dx1
 @compute
 https://zenn.dev/oyatomo/books/2d-rendering-with-wgpu/viewer/13_wgsl#wgsl-%E3%81%A8%E3%81%AF
 chapter3では@vertexと@fragmentを書く必要があった。
+
+# カバレッジ計測　in rust
+https://zenn.dev/collabostyle/articles/f0654aa0feaba8
+rustのプログラムは遅いことが多いcargo build及びcargo run
+
+cargo install cargo-llvm-covとrustup component add llvm-tools-preview
+cargoはrustupに管理されてる一つのツールチェイン
+https://claude.ai/chat/f71c3cd4-f359-47c4-8a22-57cfe3d52762
+
+```
+cargo llvm-cov --open
+```
+テストカバレッジを計測できる。
