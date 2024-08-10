@@ -88,3 +88,47 @@ Serving HTTP on :: port 8000 (http://[::]:8000/) ...
 ```
 こうなった
 ![alt text](image.png)
+
+## chapter2
+ビルドはできたけどエラーが出た
+```
+learning_wgpu.js:346 panicked at learning-wgpu/src/lib.rs:62:89:
+called `Option::unwrap()` on a `None` value
+
+Stack:
+
+Error
+    at imports.wbg.__wbg_new_abda76e883ba8a5f (http://localhost:8000/learning-wgpu/pkg/learning_wgpu.js:330:21)
+    at http://localhost:8000/learning-wgpu/pkg/learning_wgpu_bg.wasm:wasm-function[1126]:0x53156
+    at http://localhost:8000/learning-wgpu/pkg/learning_wgpu_bg.wasm:wasm-function[498]:0x347f3
+    at http://localhost:8000/learning-wgpu/pkg/learning_wgpu_bg.wasm:wasm-function[816]:0x4a6a5
+    at http://localhost:8000/learning-wgpu/pkg/learning_wgpu_bg.wasm:wasm-function[788]:0x48afa
+    at http://localhost:8000/learning-wgpu/pkg/learning_wgpu_bg.wasm:wasm-function[1037]:0x518b9
+    at http://localhost:8000/learning-wgpu/pkg/learning_wgpu_bg.wasm:wasm-function[317]:0xff74
+    at http://localhost:8000/learning-wgpu/pkg/learning_wgpu_bg.wasm:wasm-function[389]:0x29231
+    at http://localhost:8000/learning-wgpu/pkg/learning_wgpu_bg.wasm:wasm-function[941]:0x5066d
+    at __wbg_adapter_64 (http://localhost:8000/learning-wgpu/pkg/learning_wgpu.js:239:10)
+
+
+imports.wbg.__wbg_error_f851667af71bcfc6 @ learning_wgpu.js:346
+$func1126 @ learning_wgpu_bg.wasm:0x53228
+$func498 @ learning_wgpu_bg.wasm:0x347f3
+$func816 @ learning_wgpu_bg.wasm:0x4a6a5
+$func788 @ learning_wgpu_bg.wasm:0x48afa
+$func1037 @ learning_wgpu_bg.wasm:0x518b9
+$func317 @ learning_wgpu_bg.wasm:0xff74
+$func389 @ learning_wgpu_bg.wasm:0x29231
+$_dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h692562d73c68a61c @ learning_wgpu_bg.wasm:0x5066d
+__wbg_adapter_64 @ learning_wgpu.js:239
+real @ learning_wgpu.js:200Understand this error
+learning_wgpu_bg.wasm:0x34819 Uncaught RuntimeError: unreachable
+    at learning_wgpu_bg.wasm:0x34819
+    at learning_wgpu_bg.wasm:0x4a6a5
+    at learning_wgpu_bg.wasm:0x48afa
+    at learning_wgpu_bg.wasm:0x518b9
+    at learning_wgpu_bg.wasm:0xff74
+    at learning_wgpu_bg.wasm:0x29231
+    at learning_wgpu_bg.wasm:0x5066d
+    at __wbg_adapter_64 (learning_wgpu.js:239:10)
+    at real (learning_wgpu.js:200:20)
+```

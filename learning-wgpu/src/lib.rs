@@ -1,5 +1,5 @@
 
-use std::panic;
+use std::{ops::ControlFlow, panic};
 
 use cfg_if::cfg_if;
 
@@ -85,7 +85,34 @@ impl <'a> State<'a> {
     }
 
     fn render(&mut self) -> Result<(), wgpu::SurfaceError> {
-        todo!()
+        let output = self.surface.get_current_texture()?;
+        let view = output.texture.create_view(&wgpu::TextureViewDescriptor::default());
+        let mut command_encoder = self.device.create_command_encoder(&wgpu::CommandEncoderDescriptor{
+            label: Some("render encoder")
+        });
+        let render_path = command_encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+            label: Some("render path"),
+                color_attachments: &[Some(wgpu::RenderPassColorAttachment{
+                view: &view,
+                resolve_target: None,
+                ops: wgpu::Operations { 
+                    load: wgpu::LoadOp::Clear(wgpu::Color { 
+                        r: 0.1,
+                            g: 0.2,
+                            b: 0.3,
+                            a: 1.0, 
+                        }), 
+                    store: wgpu::StoreOp::Store,
+                }
+                })],
+                depth_stencil_attachment: None,
+                timestamp_writes: None, 
+                occlusion_query_set: None,
+        });
+
+        self.queue.submit(std::iter::once(command_encoder.finish()));
+        output.present();
+        Ok(())
     }
 
     #[allow(unused_variables)]
@@ -169,12 +196,22 @@ pub async fn run() {
                         surface_configured = true;
                         state.resize(*physical_size);
                     }
-                    WindowEvent::RedrawRequested => {
-                        state.window().request_redraw();
-                        if surface_configured == false {
-                            return;
+                    WindowEvent::RedrawRequested if window_id == state.window().id() => {
+                        // state.window().request_redraw();
+                        // if surface_configured == false {
+                        //     return;
+                        // }
+                        state.update();
+                        match state.render() {
+                            Ok(_) => {}
+                            Err(wgpu::SurfaceError::Lost) => state.resize(state.size),
+                            Err(wgpu::SurfaceError::OutOfMemory) => control_flow.exit(),
+                            Err(e) => println!("{:?}", e)
                         }
                     }
+                    // Event::AboutToWait => {
+                    //     state.window().request_redraw();
+                    // }
                     _ => {}
                 }
             }
