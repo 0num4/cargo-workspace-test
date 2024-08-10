@@ -2,15 +2,18 @@
 use std::panic;
 
 use cfg_if::cfg_if;
-use wasm_bindgen::prelude;
+
+use web_sys::window;
 use winit::{
     event::*,
     event_loop::EventLoop,
     keyboard::{KeyCode, PhysicalKey},
     window::WindowBuilder,
 };
+#[cfg(target_arch="wasm32")]
+use wasm_bindgen::prelude::*;
 
-
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen(start))]
 pub fn run() {
     cfg_if! {
         if #[cfg(target_arch = "wasm32")] {
@@ -22,6 +25,30 @@ pub fn run() {
     }
     let event_loop = EventLoop::new().unwrap(); // event_loopはEventLoop型
     let window = WindowBuilder::new().build(&event_loop).unwrap();
+
+    // web_sys::window().and_then(|win| win.document()).and_then(|doc | {
+    //     let dist = doc.get_element_by_id("wasm_example")?;
+    //     let canvas = web_sys::Element::from(window.canvas()?);
+    //     dist.append_child(&canvas).ok();
+    //     Some(())
+    // }).expect("canvasを追加できない");
+    #[cfg(target_arch = "wasm32")]
+    {
+        use winit::dpi::PhysicalSize;
+        let _ = window.request_inner_size(PhysicalSize::new(450, 400));
+        // winitではcssのサイズ変更ができないのでweb上でやる必要がある
+        use winit::platform::web::WindowExtWebSys; //webの補完が効かなかった
+        web_sys::window()
+            .and_then(|win| win.document())
+            .and_then(|doc| {
+                let dst = doc.get_element_by_id("wasm-example")?;
+                let canvas = web_sys::Element::from(window.canvas()?);
+                dst.append_child(&canvas).ok()?;
+                Some(())
+            })
+            .expect("Couldn't append canvas to document body.");
+        
+    }
 
     let _ = event_loop.run(move |event, control_flow| match event {
         // eventはバリアント。
