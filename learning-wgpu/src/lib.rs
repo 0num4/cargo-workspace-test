@@ -3,6 +3,7 @@ use std::{ops::ControlFlow, panic};
 
 use cfg_if::cfg_if;
 
+use image::GenericImageView;
 use web_sys::window;
 use wgpu::VertexState;
 use winit::{
@@ -293,4 +294,18 @@ pub async fn run() {
         },
         _ => {}
     });
+}
+
+pub fn render_image() -> Option<()> {
+    let img = image::open("image.png").unwrap();
+    println!("dimensions {:?}", img.dimensions());
+    println!("color {:?}", img.color());
+    let res = img.save("test.png");
+    match res {
+        Ok(_) => {
+            Some(())
+        }
+        Err(e) => panic!("err {:?}", e)
+    }
+    
 }
