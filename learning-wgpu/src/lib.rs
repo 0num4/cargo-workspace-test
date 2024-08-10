@@ -58,15 +58,17 @@ impl <'a> State<'a> {
             },
             None  
         ).await.unwrap();
+        let surface_caps =  surface.get_capabilities(&adapter);
+        let surface_format = surface_caps.formats.iter().find(|f| f.is_srgb()).copied().unwrap();
         let config = wgpu::SurfaceConfiguration {
             usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
-            format: todo!(),
+            format: surface_format,
             width: size.width,
             height: size.height,
-            present_mode: todo!(),
-            desired_maximum_frame_latency: todo!(),
-            alpha_mode: todo!(),
-            view_formats: todo!(),
+            present_mode: surface_caps.present_modes[0],
+            desired_maximum_frame_latency: 2,
+            alpha_mode: surface_caps.alpha_modes[0],
+            view_formats: vec![],
         };
         return Self {
             surface,
