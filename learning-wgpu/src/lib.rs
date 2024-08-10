@@ -27,6 +27,7 @@ struct State<'a> {
 
 impl <'a> State<'a> {
     async fn new(window: &'a Window) -> State<'a> {
+        let bytes = include_bytes!("happy-tree.png");
         let size: winit::dpi::PhysicalSize<u32> = window.inner_size();
         // wgpu::Instance::newが一番重要。
         let instance = wgpu::Instance::new(wgpu::InstanceDescriptor { 

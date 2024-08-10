@@ -205,3 +205,6 @@ https://claude.ai/chat/f71c3cd4-f359-47c4-8a22-57cfe3d52762
 cargo llvm-cov --open
 ```
 テストカバレッジを計測できる。
+
+## image crate
+include_bytes!(),任意のファイルをbyteに落とし込めるのもすごいんだけどそれの存在確認までちゃんとするのもすごい。ファイルが存在しなかったらコンパイルもしてないのに警告を出してくれる。
