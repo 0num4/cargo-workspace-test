@@ -184,3 +184,11 @@ test.html:1 Texture size ([Extent3D width:19200, height:9600, depthOrArrayLayers
 # capter3
 ## WGSLについて
 wgpuではWGSLから内部のレンダラー(valkanのspir-vやmetalのHSL、dx12のhlslやopenglのglslなど)への変換はnagaで行われる
+* w3cが策定
+* rustに似た構文
+エントリーポイントには下記の3つがある
+@vertex
+@fragment
+@compute
+https://zenn.dev/oyatomo/books/2d-rendering-with-wgpu/viewer/13_wgsl#wgsl-%E3%81%A8%E3%81%AF
+chapter3では@vertexと@fragmentを書く必要があった。
