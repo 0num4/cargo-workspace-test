@@ -1059,6 +1059,7 @@ name = "learning-wgpu"
 version = "0.1.0"
 dependencies = [
  "add-one",
+ "anyhow",
  "cfg-if",
  "console_error_panic_hook",
  "console_log",
