@@ -36,7 +36,18 @@ impl Texture {
             height: img.height(),
             depth_or_array_layers: 1,
         };
-        let texture = device.create_texture();
+        let texture = device.create_texture(
+            &wgpu::TextureDescriptor{
+                label,
+                size,
+                mip_level_count: 1,
+                sample_count: todo!(),
+                dimension: todo!(),
+                format: todo!(),
+                usage: todo!(),
+                view_formats: todo!(),
+            }
+        );
         queue.write_texture(texture, data, data_layout, size);
         let view = texture.create_view()
         let sampler = device.create_sampler()
