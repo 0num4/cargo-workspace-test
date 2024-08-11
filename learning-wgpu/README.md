@@ -243,16 +243,3 @@ Hello, world!
 cargo run --package learning-wgpu  0.53s user 0.06s system 19% cpu 3.012 total
 ```
 
-# webglとwebgpuの違い
-https://qiita.com/emadurandal/items/624fe7edd147d5a648b1
-
-* storage bufferが使える
-    * shaderで広大なメモリストレージが扱えるようになった。フラグメントシェーダーとコンピュートシェーダーからも書き込みが可能。
-* reversed-zが使える
-    * gpuを用いたリアルタイムレンダリングではz-indexが重要になってくる
-* webgl→ステートフル、webgpu→ステートレス
-* compute shaderがサポートされた。これによりgpuを汎用計算に使えるようになった。
-* mipmapを自分で作る必要が出てきた。以前は関数があったらしい
-
-https://ja.wikipedia.org/wiki/%E3%83%9F%E3%83%83%E3%83%97%E3%83%9E%E3%83%83%E3%83%97
-mipmapがなにか全然わからん
