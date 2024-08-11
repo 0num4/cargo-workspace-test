@@ -1,6 +1,8 @@
 use std::{ops::ControlFlow, panic};
 
 use cfg_if::cfg_if;
+mod texture;
+use texture::Texture;
 
 use image::GenericImageView;
 #[cfg(target_arch = "wasm32")]
@@ -33,6 +35,7 @@ impl<'a> State<'a> {
         let size: winit::dpi::PhysicalSize<u32> = window.inner_size();
         // let diffuse_texture =
         // wgpu::Instance::newが一番重要。
+
         let instance = wgpu::Instance::new(wgpu::InstanceDescriptor {
             #[cfg(not(target_arch = "wasm32"))]
             backends: wgpu::Backends::PRIMARY,
@@ -70,7 +73,8 @@ impl<'a> State<'a> {
             )
             .await
             .unwrap();
-
+        let diffuser_texture =
+            texture::Texture::from_image(&device, &queue, &img, Some("test nya")).unwrap();
         let surface_caps = surface.get_capabilities(&adapter);
         let surface_format = surface_caps
             .formats
