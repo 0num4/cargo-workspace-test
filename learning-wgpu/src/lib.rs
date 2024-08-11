@@ -27,7 +27,10 @@ struct State<'a> {
 
 impl <'a> State<'a> {
     async fn new(window: &'a Window) -> State<'a> {
-        let bytes = include_bytes!("happy-tree.png");
+        // let bytes = include_bytes!("happy-tree.png");
+        let img = image::open("happy-tree.png").unwrap();
+        // let img2 = img.as_bytes();
+        let img_rgba = img.to_rgba8();
         let size: winit::dpi::PhysicalSize<u32> = window.inner_size();
         // wgpu::Instance::newが一番重要。
         let instance = wgpu::Instance::new(wgpu::InstanceDescriptor { 
@@ -124,6 +127,42 @@ impl <'a> State<'a> {
             multiview: None,
             cache: None 
         });
+        // webgpu上ですべてのテスクチャは3dとして表現される。そのためdepthは1にする必要がある
+        let texture_size = wgpu::Extent3d {
+            width: img.width(),
+            height: img.height(),
+            depth_or_array_layers: 1
+        };
+        let texture = device.create_texture(&wgpu::TextureDescriptor{
+            label: Some("diffuse texture"),
+            size: texture_size,
+            mip_level_count: 1,
+            sample_count: 1,
+            dimension: wgpu::TextureDimension::D2,
+            format: wgpu::TextureFormat::Rgba8UnormSrgb,
+            usage: wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::COPY_DST,
+            // これは SurfaceConfig の場合と同じです。このテクスチャの TextureView を作成するためにどのテクスチャ形式を使用できるかを指定します。基本テクスチャ形式 (この場合は Rgba8UnormSrgb) が常にサポートされます。異なるテクスチャ形式の使用は、WebGL2 バックエンドではサポートされていないことに注意してください。
+            // viewを作るためにことなるwgpu::TextureFormat::を指定する必要があることもあるって感じかな？
+            view_formats: &[],
+        });
+        queue.write_texture(
+            wgpu::ImageCopyTextureBase { 
+                texture: &texture, 
+                mip_level: 0, 
+                origin: wgpu::Origin3d::ZERO, 
+                aspect: wgpu::TextureAspect::All 
+            }, 
+            &img_rgba,
+            wgpu::ImageDataLayout { 
+                offset: 0, 
+                bytes_per_row: Some(4* img.width()), 
+                rows_per_image: Some(4* img.height())
+             },
+            texture_size
+        );
+        // let sampler = device.create_sampler(
+
+        // )
 
         return Self {
             surface,

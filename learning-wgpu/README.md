@@ -182,6 +182,8 @@ test.html:1 Texture size ([Extent3D width:19200, height:9600, depthOrArrayLayers
 ```
 
 # capter3
+## pipelineについて
+WGSLを使うにはpipelineの設定が必要
 ## WGSLについて
 wgpuではWGSLから内部のレンダラー(valkanのspir-vやmetalのHSL、dx12のhlslやopenglのglslなど)への変換はnagaで行われる
 * w3cが策定
@@ -206,5 +208,33 @@ cargo llvm-cov --open
 ```
 テストカバレッジを計測できる。
 
+# capter4 バッファ
+飛ばす
+
+# capter5 テクスチャの実装
 ## image crate
 include_bytes!(),任意のファイルをbyteに落とし込めるのもすごいんだけどそれの存在確認までちゃんとするのもすごい。ファイルが存在しなかったらコンパイルもしてないのに警告を出してくれる。
+
+# テクスチャ
+image clateでbytesとしてimageを読み込んだらdevice.create_textureでテクスチャを読み込む必要がある
+
+device.create_textureでtextureを作成したらqueueに書き込む必要がある
+
+queueに入れたらこんどはそれを使う方でも実装が必要。TextureViewとSamplerが必要。
+
+テクスチャにデータが入ったので、それを使用する方法が必要です。ここで、TextureView と Sampler が登場します。TextureView は、テクスチャのビューを提供します。サンプラーは、テクスチャのサンプリング方法を制御します。サンプリングは、GIMP/Photoshop のスポイト ツールと同様に機能します。私たちのプログラムはテクスチャ上の座標 (テクスチャ座標と呼ばれる) を提供し、サンプラーはテクスチャといくつかの内部パラメータに基づいて対応する色を返します。
+
+# ビルド速度の計測
+デカ目のrustプロジェクトはビルド、テスト速度が律速になることが多い
+
+このプロジェクトは既存のmacで3sぐらい
+```
+cargo-workspace-test on  main [!+⇡] via 🦀 v1.80.1 on ☁️   took 3s 
+warning: `learning-wgpu` (bin "learning-wgpu") generated 9 warnings (5 duplicates) (run `cargo fix --bin "learning-wgpu"` to apply 2 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.06s
+     Running `target/debug/learning-wgpu`
+dimensions (1206, 752)
+color Rgba8
+Hello, world!
+cargo run --package learning-wgpu  0.53s user 0.06s system 19% cpu 3.012 total
+```
