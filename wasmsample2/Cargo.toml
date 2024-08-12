@@ -3,9 +3,5 @@ name = "wasmsample2"
 version = "0.1.0"
 edition = "2021"
 
-[lib]
-name = "wasmsample2"
-path = "src/lib.rs"
-
 [dependencies]
 add-one = { path = "../add-one" }
