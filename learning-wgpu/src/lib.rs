@@ -1,16 +1,15 @@
-use std::{ops::ControlFlow, panic};
+use std::panic;
 
 use cfg_if::cfg_if;
-mod texture;
-use texture::Texture;
-
 use image::GenericImageView;
+use texture::Texture;
+// mod texture::Texture;
+// pub use texture::Texture;
+
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
-use web_sys::window;
-use wgpu::VertexState;
 use winit::{
-    event::{self, *},
+    event::*,
     event_loop::EventLoop,
     keyboard::{KeyCode, PhysicalKey},
     window::{Window, WindowBuilder},
@@ -197,7 +196,7 @@ impl<'a> State<'a> {
             layout: &bind_group_layout,
             entries: &[wgpu::BindGroupEntry {
                 binding: 0,
-                resource: wgpu::BindingResource::TextureView(&view),
+                resource: wgpu::BindingResource::TextureView(&diffuser_texture.view),
             }],
         });
 

@@ -184,6 +184,9 @@ test.html:1 Texture size ([Extent3D width:19200, height:9600, depthOrArrayLayers
 # capter3
 ## pipelineについて
 WGSLを使うにはpipelineの設定が必要
+
+vertex shader→fragmen shaderの１連の流れをpipelineという
+
 ## WGSLについて
 wgpuではWGSLから内部のレンダラー(valkanのspir-vやmetalのHSL、dx12のhlslやopenglのglslなど)への変換はnagaで行われる
 * w3cが策定
