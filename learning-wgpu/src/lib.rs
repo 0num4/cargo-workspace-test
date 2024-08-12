@@ -2,9 +2,93 @@ use std::panic;
 
 use cfg_if::cfg_if;
 use image::GenericImageView;
-use texture::Texture;
-// mod texture::Texture;
-// pub use texture::Texture;
+
+// use image::GenericImageView;
+use image::*;
+
+// use anyhow::*;
+
+pub struct Texture {
+    #[allow(unused)]
+    pub texture: wgpu::Texture,
+    pub view: wgpu::TextureView,
+    pub sampler: wgpu::Sampler,
+}
+
+impl Texture {
+    pub fn from_bytes(
+        device: &wgpu::Device,
+        queue: &wgpu::Queue,
+        bytes: &[u8],
+        label: &str,
+    ) -> Self {
+        let img = image::load_from_memory(bytes).unwrap();
+        Self::from_image(device, queue, &img, Some(label))
+    }
+
+    pub fn from_image(
+        device: &wgpu::Device,
+        queue: &wgpu::Queue,
+        img: &DynamicImage,
+        label: Option<&str>,
+    ) -> Self {
+        let dimention = img.dimensions();
+        let rgba = img.to_rgba8();
+        let size = wgpu::Extent3d {
+            width: img.width(),
+            height: img.height(),
+            depth_or_array_layers: 1,
+        };
+        let texture = device.create_texture(&wgpu::TextureDescriptor {
+            label: Some("diffuse_texture"),
+            size,
+            mip_level_count: 1,
+            sample_count: 1,
+            dimension: wgpu::TextureDimension::D2,
+            // unormのnormはnormalizationを意味する。Srgbのsはstandardを意味する
+            format: wgpu::TextureFormat::Rgba8UnormSrgb,
+            usage: wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::COPY_DST,
+            view_formats: &[],
+        });
+
+        // ImageCopyTextureやImageCopyBufferなどがある
+        // webgpuではテクスチャを使用してシェーダーに画像データを提供して、レンダリング時にそのデータを使用してピクセルの色を決定します。テクスチャはシェーダーに渡す。
+        queue.write_texture(
+            wgpu::ImageCopyTexture {
+                aspect: wgpu::TextureAspect::All,
+                texture: &texture,
+                mip_level: 0, // mipmap_level0は最も高解像度のmipmaplevelを指す。
+                origin: wgpu::Origin3d::ZERO, // 3次元空間の0(0,0,0)を表す
+            },
+            &rgba,
+            wgpu::ImageDataLayout {
+                offset: 0,
+                bytes_per_row: Some(4 * img.width()),
+                rows_per_image: Some(img.height()),
+            },
+            size,
+        );
+        let view = texture.create_view(&wgpu::TextureViewDescriptor::default());
+        // アドレスモードはU、V、W軸すべてで繰り返し（Repeat）。
+        let sampler = device.create_sampler(&wgpu::SamplerDescriptor {
+            label: Some("nya"),
+            // clamptoEdgeはtextureが範囲外(0~1以外)にある場合にもっとも近いedgeの色を使用することを意味します。
+            address_mode_u: wgpu::AddressMode::ClampToEdge,
+            address_mode_v: wgpu::AddressMode::ClampToEdge,
+            address_mode_w: wgpu::AddressMode::ClampToEdge,
+            // magfilterはテクスチャの拡大に関わる。テクスチャがシェーダーで拡大される際にどのように
+            mag_filter: wgpu::FilterMode::Linear, //より滑らかで計算コストは中
+            min_filter: wgpu::FilterMode::Nearest, //最も計算コストが低い
+            mipmap_filter: wgpu::FilterMode::Nearest, //ピクセル化された見た目になることがある
+            ..Default::default()
+        });
+        Self {
+            texture,
+            view,
+            sampler,
+        }
+    }
+}
 
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
@@ -23,6 +107,7 @@ struct State<'a> {
     size: winit::dpi::PhysicalSize<u32>,
     window: &'a Window,
     render_pipeline: wgpu::RenderPipeline,
+    bind_group: wgpu::BindGroup,
 }
 
 impl<'a> State<'a> {
@@ -72,8 +157,7 @@ impl<'a> State<'a> {
             )
             .await
             .unwrap();
-        let diffuser_texture =
-            texture::Texture::from_image(&device, &queue, &img, Some("test nya")).unwrap();
+        let diffuser_texture = Texture::from_image(&device, &queue, &img, Some("test nya"));
         let surface_caps = surface.get_capabilities(&adapter);
         let surface_format = surface_caps
             .formats
@@ -95,10 +179,19 @@ impl<'a> State<'a> {
             label: Some("shader"),
             source: wgpu::ShaderSource::Wgsl(include_str!("shader.wgsl").into()),
         });
+        let bind_group_layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
+            label: Some("bingroup_layout"),
+            entries: &[wgpu::BindGroupLayoutEntry {
+                binding: 0,
+                visibility: wgpu::ShaderStages::FRAGMENT,
+                ty: wgpu::BindingType::Sampler(wgpu::SamplerBindingType::Filtering),
+                count: None,
+            }],
+        });
         let render_pipeline_layout =
             device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
                 label: Some("shader"),
-                bind_group_layouts: &[],
+                bind_group_layouts: &[&bind_group_layout],
                 push_constant_ranges: &[],
             });
         let render_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
@@ -182,15 +275,7 @@ impl<'a> State<'a> {
             mipmap_filter: wgpu::FilterMode::Nearest,
             ..Default::default()
         });
-        let bind_group_layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
-            label: Some("bingroup_layout"),
-            entries: &[wgpu::BindGroupLayoutEntry {
-                binding: 0,
-                visibility: wgpu::ShaderStages::FRAGMENT,
-                ty: wgpu::BindingType::Sampler(wgpu::SamplerBindingType::Filtering),
-                count: None,
-            }],
-        });
+
         let bind_group = device.create_bind_group(&wgpu::BindGroupDescriptor {
             label: Some("nya"),
             layout: &bind_group_layout,
@@ -208,6 +293,7 @@ impl<'a> State<'a> {
             size,
             window,
             render_pipeline,
+            bind_group,
         };
     }
 
@@ -247,6 +333,7 @@ impl<'a> State<'a> {
             });
 
             render_path.set_pipeline(&self.render_pipeline);
+            render_path.set_bind_group(0, &self.bind_group, &[]);
             render_path.draw(0..3, 0..1);
         }
         self.queue.submit(std::iter::once(command_encoder.finish()));
